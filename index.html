@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>States and Capitals Flashcard Game</title>
+    <!-- This line links to your CSS file -->
+    <link rel="stylesheet" href="style.css">
+    <!-- This line adds a Google Font for a nicer look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- This is the main container for the entire game -->
+    <div id="game-container">
+        <h1 id="instruction-label">Select a game mode to start!</h1>
+        
+        <!-- This container will hold the buttons for mode, number, and difficulty -->
+        <div id="selection-container"></div>
+        
+        <!-- This is the main game screen, hidden by default -->
+        <div id="game-area" class="hidden">
+            <!-- The progress bar shows correct/incorrect answers -->
+            <div id="progress-bar-container"></div>
+            <p id="prompt-label"></p>
+            <img id="state-image" src="" alt="State Image">
+            
+            <!-- The answer buttons or text box will appear here -->
+            <div id="answer-area"></div>
+            
+            <!-- The score and timer are displayed here -->
+            <div id="stats-container">
+                <span id="score-label">Score: 0</span>
+                <span id="time-label">Time: 0s</span>
+            </div>
+        </div>
+
+        <!-- This is the final results screen, hidden by default -->
+        <div id="results-area" class="hidden">
+            <h2 id="final-score"></h2>
+            <p id="final-grade"></p>
+            <p id="final-time"></p>
+            <div id="wrong-answers"></div>
+            <button id="replay-button">Play Again</button>
+        </div>
+    </div>
+    
+    <!-- This line links to your JavaScript file, it MUST be at the end -->
+    <script src="script.js"></script>
+</body>
+</html>
