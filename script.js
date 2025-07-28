@@ -36,7 +36,7 @@ const statesData = {
     "North Carolina": { capital: "Raleigh", abbreviation: "NC", facts: ["Known as the Tar Heel State.", "Home to the tallest lighthouse in the U.S., the Cape Hatteras Lighthouse?", "Home to the Wright Brothers’ first flight.", "Known for its tobacco production.", "Which state is home to the largest privately owned home in the U.S., the Biltmore Estate?"] },
     "North Dakota": { capital: "Bismarck", abbreviation: "ND", facts: ["Known as the Peace Garden State.", "Famous for its sunflower fields.", "Home to Theodore Roosevelt National Park.", "A major producer of wheat.", "Known for its oil fields."] },
     "Ohio": { capital: "Columbus", abbreviation: "OH", facts: ["Known as the Buckeye State.", "Home to the Rock and Roll Hall of Fame.", "Famous for its roller coasters at Cedar Point.", "The airplane was invented here.", "Which state is the only one with a non-rectangular flag?"] },
-    "Oklahoma": { capital: "Oklahoma City", abbreviation: "OK", facts: ["Known as the Sooner State.", "Famous for its Native American heritage.", "Home to the National Cowboy & Western Heritage Museum.", "Has more man-made lakes than any other state?", "Has the largest Native American population in the United States?"] },
+    "Oklahoma": { capital: "Oklahoma City", abbreviation: "OK", facts: ["Known as the Sooner State.", "Famous for its Native American heritage.", "Home to the National Cowboy & Western Heritage Museum.", "Which state has the longest drivable stretch of the historic Route 66 and a dedicated museum in Clinton?", "Which state is the only one with an official state meal, which includes fried okra, cornbread, and barbecue pork?"] },
     "Oregon": { capital: "Salem", abbreviation: "OR", facts: ["Known as the Beaver State.", "Famous for its Crater Lake, the deepest in the U.S.", "Home to the city of Portland, known for roses.", "Home to the largest independent bookstore in the world, Powell's City of Books?", "Known for its wine country."] },
     "Pennsylvania": { capital: "Harrisburg", abbreviation: "PA", facts: ["Known as the Keystone State.", "Home to the Liberty Bell.", "Famous for its chocolate in Hershey.", "Hosted the signing of the Declaration of Independence.", "Home to the first zoo in the United States, the Philadelphia Zoo?"] },
     "Rhode Island": { capital: "Providence", abbreviation: "RI", facts: ["Known as the Ocean State.", "The smallest in the U.S. by area.", "Which state hosted the America's Cup sailing race for over 50 years?", "Founded the first circus in the U.S.", "Known for its colonial history."] },
@@ -54,7 +54,6 @@ const statesData = {
 };
 
 // --- DOM Element References ---
-// Getting references to all the HTML elements we will interact with.
 const instructionLabel = document.getElementById('instruction-label');
 const selectionContainer = document.getElementById('selection-container');
 const gameArea = document.getElementById('game-area');
@@ -86,7 +85,6 @@ let askedQuestions = [];
 let correctAnswer = '';
 
 // --- Sound Effects ---
-// Pre-loading sounds to avoid delays during gameplay.
 const clickSound = new Audio('sounds/click.mp3');
 const correctSound = new Audio('sounds/correct.mp3');
 const incorrectSound = new Audio('sounds/incorrect.mp3');
@@ -97,7 +95,6 @@ function playSound(sound) {
 }
 
 // --- Initial Game Setup ---
-// This function runs when the script first loads.
 function init() {
     showModeSelection();
     replayButton.addEventListener('click', restartGame);
@@ -105,12 +102,9 @@ function init() {
 
 // --- Game Flow Functions ---
 
-/**
- * Displays the initial game mode selection buttons.
- */
 function showModeSelection() {
     instructionLabel.textContent = 'Select a game mode to start!';
-    selectionContainer.innerHTML = ''; // Clear previous buttons
+    selectionContainer.innerHTML = ''; 
 
     const modes = [
         { text: "State Shape Challenge", value: "State Shape Challenge" },
@@ -128,19 +122,12 @@ function showModeSelection() {
     });
 }
 
-/**
- * Handles the selection of a game mode and proceeds to the number of states selection.
- * @param {string} mode - The selected game mode.
- */
 function selectMode(mode) {
     playSound(clickSound);
     currentMode = mode;
     showNumStatesSelection();
 }
 
-/**
- * Displays buttons for selecting the number of states for the quiz.
- */
 function showNumStatesSelection() {
     instructionLabel.textContent = 'How many states do you want to play with?';
     selectionContainer.innerHTML = '';
@@ -153,25 +140,17 @@ function showNumStatesSelection() {
     });
 }
 
-/**
- * Handles the selection of the number of states and proceeds to difficulty selection or starts the game.
- * @param {number} num - The selected number of states.
- */
 function selectNumStates(num) {
     playSound(clickSound);
     numStates = num;
-    // For the Abbreviation Challenge, skip difficulty selection and default to text input.
     if (currentMode === "Abbreviation Challenge") {
-        difficulty = 'hard'; // This ensures text input is used.
+        difficulty = 'hard';
         startGame();
     } else {
         showDifficultySelection();
     }
 }
 
-/**
- * Displays buttons for selecting the game difficulty.
- */
 function showDifficultySelection() {
     instructionLabel.textContent = 'Select your difficulty level:';
     selectionContainer.innerHTML = '';
@@ -190,21 +169,13 @@ function showDifficultySelection() {
     });
 }
 
-/**
- * Handles the difficulty selection and starts the game.
- * @param {string} diff - The selected difficulty ('easy', 'medium', 'hard').
- */
 function selectDifficulty(diff) {
     playSound(clickSound);
     difficulty = diff;
     startGame();
 }
 
-/**
- * Initializes the main game screen and state variables.
- */
 function startGame() {
-    // Reset all game state variables
     currentIndex = 0;
     score = 0;
     wrongAnswers = [];
@@ -213,35 +184,28 @@ function startGame() {
     scoreLabel.textContent = `Score: 0`;
     timeLabel.textContent = `Time: 0s`;
 
-    // Hide selection screen, show game area
     instructionLabel.classList.add('hidden');
     selectionContainer.classList.add('hidden');
     gameArea.classList.remove('hidden');
     resultsArea.classList.add('hidden');
 
-    // Prepare the list of states for the game
     const allStates = Object.keys(statesData);
-    // Shuffle the array
     for (let i = allStates.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [allStates[i], allStates[j]] = [allStates[j], allStates[i]];
     }
     selectedStates = allStates.slice(0, numStates);
 
-    // Start the timer
     startTime = Date.now();
+    if(timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(updateTimer, 1000);
 
     showNextFlashcard();
 }
 
-/**
- * Displays the next question/flashcard.
- */
 function showNextFlashcard() {
     updateProgressBar();
 
-    // Check if the game is over
     if (currentIndex >= numStates) {
         endGame();
         return;
@@ -254,10 +218,8 @@ function showNextFlashcard() {
     stateImage.src = `states_images/${stateFilename}`;
     stateImage.alt = `Shape of ${stateName}`;
     
-    // Default to showing the image
     stateImage.classList.remove('hidden');
 
-    // Set the prompt and correct answer based on the game mode
     switch (currentMode) {
         case "State Shape Challenge":
             promptLabel.textContent = "What is this state?";
@@ -289,22 +251,18 @@ function showNextFlashcard() {
     setupAnswerArea();
 }
 
-/**
- * Sets up the answer area based on the selected difficulty.
- */
 function setupAnswerArea() {
-    answerArea.innerHTML = ''; // Clear previous answer options
+    answerArea.innerHTML = ''; 
 
     if (difficulty === 'hard') {
         const input = document.createElement('input');
         input.type = 'text';
         input.id = 'answer-entry';
         
-        // Customize for Abbreviation mode
         if (currentMode === "Abbreviation Challenge") {
             input.placeholder = 'Type abbreviation...';
             input.maxLength = 2;
-            input.autocapitalize = 'characters'; // Helps mobile users
+            input.autocapitalize = 'characters'; 
             input.style.textTransform = 'uppercase';
         } else {
             input.placeholder = 'Type your answer...';
@@ -322,35 +280,30 @@ function setupAnswerArea() {
 
         answerArea.appendChild(input);
         answerArea.appendChild(submitBtn);
-        input.focus(); // Automatically focus on the text box
+        input.focus(); 
     } else {
         const numOptions = difficulty === 'easy' ? 2 : 5;
         let options = [correctAnswer];
         let allPossibleAnswers;
 
-        // Determine the pool of potential wrong answers
         if (currentMode === 'Capital Quest') {
             allPossibleAnswers = Object.values(statesData).map(d => d.capital);
         } else {
             allPossibleAnswers = Object.keys(statesData);
         }
 
-        // Remove the correct answer from the pool
         allPossibleAnswers = allPossibleAnswers.filter(ans => ans !== correctAnswer);
 
-        // Randomly select wrong answers
         while (options.length < numOptions && allPossibleAnswers.length > 0) {
             const randomIndex = Math.floor(Math.random() * allPossibleAnswers.length);
             options.push(allPossibleAnswers.splice(randomIndex, 1)[0]);
         }
         
-        // Shuffle the final options
         for (let i = options.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [options[i], options[j]] = [options[j], options[i]];
         }
 
-        // Create a button for each option
         options.forEach(option => {
             const btn = document.createElement('button');
             btn.textContent = option;
@@ -360,13 +313,8 @@ function setupAnswerArea() {
     }
 }
 
-/**
- * Checks the user's answer, updates the score, and provides feedback.
- * @param {string} userAnswer - The answer provided by the user.
- */
 function checkAnswer(userAnswer) {
     let isCorrect;
-    // Check answer based on game mode
     if (currentMode === "Abbreviation Challenge") {
         isCorrect = userAnswer.trim().toUpperCase() === correctAnswer;
     } else {
@@ -375,7 +323,6 @@ function checkAnswer(userAnswer) {
 
     const feedbackColor = isCorrect ? 'var(--light-green)' : 'var(--light-red)';
     
-    // Provide visual feedback
     document.body.style.backgroundColor = feedbackColor;
     setTimeout(() => {
         document.body.style.backgroundColor = 'var(--background-gray)';
@@ -401,24 +348,19 @@ function checkAnswer(userAnswer) {
     showNextFlashcard();
 }
 
-/**
- * Ends the game and displays the final results screen.
- */
 function endGame() {
-    clearInterval(timerInterval); // Stop the timer
+    clearInterval(timerInterval); 
+    timerInterval = null;
     const totalTime = Math.round((Date.now() - startTime) / 1000);
     const percentage = Math.round((score / numStates) * 100);
 
-    // Hide game area, show results
     gameArea.classList.add('hidden');
     resultsArea.classList.remove('hidden');
 
-    // Display final stats
     finalScore.textContent = `Your score: ${score}/${numStates} (${percentage}%)`;
     finalGrade.textContent = `Grade: ${calculateGrade(percentage)}`;
     finalTime.textContent = `Time taken: ${totalTime} seconds`;
 
-    // Display list of wrong answers
     wrongAnswersContainer.innerHTML = '';
     if (wrongAnswers.length > 0) {
         const header = document.createElement('h3');
@@ -436,28 +378,33 @@ function endGame() {
 
 /**
  * Resets the game to the initial mode selection screen.
+ * This is used by both the "Replay" and "Home" buttons.
  */
 function restartGame() {
     playSound(clickSound);
+    // Hide all active screens
+    gameArea.classList.add('hidden');
     resultsArea.classList.add('hidden');
+    
+    // Show the main menu
     instructionLabel.classList.remove('hidden');
     selectionContainer.classList.remove('hidden');
+    
+    // Stop the timer if it's running
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+
+    // Re-initialize the buttons on the home screen
     init();
 }
 
 // --- Helper Functions ---
 
-/**
- * Updates the timer display every second.
- */
 function updateTimer() {
     const elapsed = Math.round((Date.now() - startTime) / 1000);
     timeLabel.textContent = `Time: ${elapsed}s`;
 }
 
-/**
- * Updates the visual progress bar at the top of the game area.
- */
 function updateProgressBar() {
     progressBarContainer.innerHTML = '';
     const segmentWidth = 100 / numStates;
@@ -474,11 +421,6 @@ function updateProgressBar() {
     }
 }
 
-/**
- * Calculates a letter grade based on the percentage score.
- * @param {number} percentage - The final score percentage.
- * @returns {string} The calculated letter grade.
- */
 function calculateGrade(percentage) {
     if (percentage >= 90) return "A";
     if (percentage >= 80) return "B";
@@ -488,5 +430,4 @@ function calculateGrade(percentage) {
 }
 
 // --- Start the Application ---
-// This is the entry point of the script.
 document.addEventListener('DOMContentLoaded', init);
