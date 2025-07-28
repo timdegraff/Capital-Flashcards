@@ -11,16 +11,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* This ensures the body stacks content vertically and centers it */
+        body {
+            flex-direction: column;
+        }
         /* Styles for the new site title */
         .site-title {
             color: #3B82F6; /* Same blue as the game buttons */
             text-align: center;
-            padding: 1rem 0;
+            padding: 2rem 0 1rem 0; /* Add padding for spacing */
             font-weight: bold;
         }
         .site-title h1 {
             margin: 0;
-            font-size: 2.5rem; /* Default size for desktop */
+            font-size: 1.5rem; /* Smaller size for desktop */
         }
         /* Style for the new home button */
         .home-btn {
@@ -35,20 +39,15 @@
         .home-btn:hover {
             background-color: #fca5b3;
         }
-        /* Media query to make the title smaller on mobile devices */
+        /* Media query to make the title even smaller on mobile devices */
         @media (max-width: 600px) {
             .site-title h1 {
-                font-size: 1.8rem;
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Site Title -->
-    <header class="site-title">
-        <h1>DeGraff Games</h1>
-    </header>
-
     <!-- This is the main container for the entire game -->
     <div id="game-container">
         <h1 id="instruction-label">Select a game mode to start!</h1>
@@ -85,6 +84,11 @@
             <button id="replay-button">Play Again</button>
         </div>
     </div>
+
+    <!-- Site Title moved to the bottom -->
+    <header class="site-title">
+        <h1>DeGraff Games</h1>
+    </header>
     
     <!-- This line links to your JavaScript file, it MUST be at the end -->
     <script src="script.js"></script>
